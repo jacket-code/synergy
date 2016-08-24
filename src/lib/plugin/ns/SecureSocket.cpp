@@ -668,6 +668,7 @@ SecureSocket::serviceAccept(ISocketMultiplexerJob* job,
 
 	// If status > 0, success
 	if (status > 0) {
+		sendEvent(m_events->forClientListener().accepted());
 		return newJob();
 	}
 
