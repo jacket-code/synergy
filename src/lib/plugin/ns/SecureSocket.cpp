@@ -135,9 +135,9 @@ SecureSocket::secureRead(void* buffer, int size, int& read)
 		if (isFatal()) {
 			return -1;
 		}
-	}
 
-	retry = 0;
+		retry = 0;
+	}
 
 	// According to SSL spec, the number of bytes read must not be negative and
 	// not have an error code from SSL_get_error(). If this happens, it is
@@ -165,10 +165,10 @@ SecureSocket::secureWrite(const void* buffer, int size, int& wrote)
 		if (isFatal()) {
 			return -1;
 		}
+
+		retry = 0;
 	}
 
-	retry = 0;
-	
 	// According to SSL spec, r must not be negative and not have an error code
 	// from SSL_get_error(). If this happens, it is itself an error. Let the
 	// parent handle the case
