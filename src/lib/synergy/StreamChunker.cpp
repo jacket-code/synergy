@@ -95,7 +95,7 @@ StreamChunker::sendFile(
 
 			char* chunkData = new char[chunkSize];
 			file.read(chunkData, chunkSize);
-			UInt8* data = static_cast<UInt8*>(chunkData);
+			UInt8* data = reinterpret_cast<UInt8*>(chunkData);
 			FileChunk* fileChunk = FileChunk::data(data, chunkSize);
 			delete[] chunkData;
 
