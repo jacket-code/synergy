@@ -55,7 +55,7 @@ StreamChunker::sendFile(
 {
 	s_isChunkingFile = true;
 	
-	std::fstream file(reinterpret_cast<char*>(filename), std::ios::in | std::ios::binary);
+	std::fstream file(static_cast<char*>(filename), std::ios::in | std::ios::binary);
 
 	if (!file.is_open()) {
 		throw runtime_error("failed to open file");
@@ -95,7 +95,7 @@ StreamChunker::sendFile(
 
 			char* chunkData = new char[chunkSize];
 			file.read(chunkData, chunkSize);
-			UInt8* data = reinterpret_cast<UInt8*>(chunkData);
+			UInt8* data = static_cast<UInt8*>(chunkData);
 			FileChunk* fileChunk = FileChunk::data(data, chunkSize);
 			delete[] chunkData;
 

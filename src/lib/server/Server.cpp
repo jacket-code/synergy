@@ -1192,7 +1192,7 @@ void
 Server::handleShapeChanged(const Event&, void* vclient)
 {
 	// ignore events from unknown clients
-	BaseClientProxy* client = reinterpret_cast<BaseClientProxy*>(vclient);
+	BaseClientProxy* client = static_cast<BaseClientProxy*>(vclient);
 	if (m_clientSet.count(client) == 0) {
 		return;
 	}
@@ -1225,12 +1225,12 @@ void
 Server::handleClipboardGrabbed(const Event& event, void* vclient)
 {
 	// ignore events from unknown clients
-	BaseClientProxy* grabber = reinterpret_cast<BaseClientProxy*>(vclient);
+	BaseClientProxy* grabber = static_cast<BaseClientProxy*>(vclient);
 	if (m_clientSet.count(grabber) == 0) {
 		return;
 	}
 	const IScreen::ClipboardInfo* info =
-		reinterpret_cast<const IScreen::ClipboardInfo*>(event.getData());
+		static_cast<const IScreen::ClipboardInfo*>(event.getData());
 
 	// ignore grab if sequence number is old.  always allow primary
 	// screen to grab.
@@ -1271,12 +1271,12 @@ void
 Server::handleClipboardChanged(const Event& event, void* vclient)
 {
 	// ignore events from unknown clients
-	BaseClientProxy* sender = reinterpret_cast<BaseClientProxy*>(vclient);
+	BaseClientProxy* sender = static_cast<BaseClientProxy*>(vclient);
 	if (m_clientSet.count(sender) == 0) {
 		return;
 	}
 	const IScreen::ClipboardInfo* info =
-		reinterpret_cast<const IScreen::ClipboardInfo*>(event.getData());
+		static_cast<const IScreen::ClipboardInfo*>(event.getData());
 	onClipboardChanged(sender, info->m_id, info->m_sequenceNumber);
 }
 
@@ -1284,7 +1284,7 @@ void
 Server::handleKeyDownEvent(const Event& event, void*)
 {
 	IPlatformScreen::KeyInfo* info =
-		reinterpret_cast<IPlatformScreen::KeyInfo*>(event.getData());
+		static_cast<IPlatformScreen::KeyInfo*>(event.getData());
 	onKeyDown(info->m_key, info->m_mask, info->m_button, info->m_screens);
 }
 
@@ -1292,7 +1292,7 @@ void
 Server::handleKeyUpEvent(const Event& event, void*)
 {
 	IPlatformScreen::KeyInfo* info =
-		 reinterpret_cast<IPlatformScreen::KeyInfo*>(event.getData());
+		 static_cast<IPlatformScreen::KeyInfo*>(event.getData());
 	onKeyUp(info->m_key, info->m_mask, info->m_button, info->m_screens);
 }
 
@@ -1300,7 +1300,7 @@ void
 Server::handleKeyRepeatEvent(const Event& event, void*)
 {
 	IPlatformScreen::KeyInfo* info =
-		reinterpret_cast<IPlatformScreen::KeyInfo*>(event.getData());
+		static_cast<IPlatformScreen::KeyInfo*>(event.getData());
 	onKeyRepeat(info->m_key, info->m_mask, info->m_count, info->m_button);
 }
 
@@ -1308,7 +1308,7 @@ void
 Server::handleButtonDownEvent(const Event& event, void*)
 {
 	IPlatformScreen::ButtonInfo* info =
-		reinterpret_cast<IPlatformScreen::ButtonInfo*>(event.getData());
+		static_cast<IPlatformScreen::ButtonInfo*>(event.getData());
 	onMouseDown(info->m_button);
 }
 
@@ -1316,7 +1316,7 @@ void
 Server::handleButtonUpEvent(const Event& event, void*)
 {
 	IPlatformScreen::ButtonInfo* info =
-		reinterpret_cast<IPlatformScreen::ButtonInfo*>(event.getData());
+		static_cast<IPlatformScreen::ButtonInfo*>(event.getData());
 	onMouseUp(info->m_button);
 }
 
@@ -1324,7 +1324,7 @@ void
 Server::handleMotionPrimaryEvent(const Event& event, void*)
 {
 	IPlatformScreen::MotionInfo* info =
-		reinterpret_cast<IPlatformScreen::MotionInfo*>(event.getData());
+		static_cast<IPlatformScreen::MotionInfo*>(event.getData());
 	onMouseMovePrimary(info->m_x, info->m_y);
 }
 
@@ -1332,7 +1332,7 @@ void
 Server::handleMotionSecondaryEvent(const Event& event, void*)
 {
 	IPlatformScreen::MotionInfo* info =
-		reinterpret_cast<IPlatformScreen::MotionInfo*>(event.getData());
+		static_cast<IPlatformScreen::MotionInfo*>(event.getData());
 	onMouseMoveSecondary(info->m_x, info->m_y);
 }
 
@@ -1340,7 +1340,7 @@ void
 Server::handleWheelEvent(const Event& event, void*)
 {
 	IPlatformScreen::WheelInfo* info =
-		reinterpret_cast<IPlatformScreen::WheelInfo*>(event.getData());
+		static_cast<IPlatformScreen::WheelInfo*>(event.getData());
 	onMouseWheel(info->m_xDelta, info->m_yDelta);
 }
 
@@ -1375,7 +1375,7 @@ Server::handleClientDisconnected(const Event&, void* vclient)
 {
 	// client has disconnected.  it might be an old client or an
 	// active client.  we don't care so just handle it both ways.
-	BaseClientProxy* client = reinterpret_cast<BaseClientProxy*>(vclient);
+	BaseClientProxy* client = static_cast<BaseClientProxy*>(vclient);
 	removeActiveClient(client);
 	removeOldClient(client);
 
@@ -1389,7 +1389,7 @@ void
 Server::handleClientCloseTimeout(const Event&, void* vclient)
 {
 	// client took too long to disconnect.  just dump it.
-	BaseClientProxy* client = reinterpret_cast<BaseClientProxy*>(vclient);
+	BaseClientProxy* client = static_cast<BaseClientProxy*>(vclient);
 	LOG((CLOG_NOTE "forced disconnection of client \"%s\"", getName(client).c_str()));
 	removeOldClient(client);
 	PacketStreamFilter* streamFileter = dynamic_cast<PacketStreamFilter*>(client->getStream());
@@ -1402,7 +1402,7 @@ void
 Server::handleSwitchToScreenEvent(const Event& event, void*)
 {
 	SwitchToScreenInfo* info = 
-		reinterpret_cast<SwitchToScreenInfo*>(event.getData());
+		static_cast<SwitchToScreenInfo*>(event.getData());
 
 	ClientList::const_iterator index = m_clients.find(info->m_screen);
 	if (index == m_clients.end()) {
@@ -1417,7 +1417,7 @@ void
 Server::handleSwitchInDirectionEvent(const Event& event, void*)
 {
 	SwitchInDirectionInfo* info = 
-		reinterpret_cast<SwitchInDirectionInfo*>(event.getData());
+		static_cast<SwitchInDirectionInfo*>(event.getData());
 
 	// jump to screen in chosen direction from center of this screen
 	SInt32 x = m_x, y = m_y;
@@ -1818,7 +1818,7 @@ Server::onMouseMovePrimary(SInt32 x, SInt32 y)
 void
 Server::sendDragInfoThread(void* arg)
 {
-	BaseClientProxy* newScreen = reinterpret_cast<BaseClientProxy*>(arg);
+	BaseClientProxy* newScreen = static_cast<BaseClientProxy*>(arg);
 
 	m_dragFileList.clear();
 	String& dragFileList = m_screen->getDraggingFilename();
@@ -2064,7 +2064,7 @@ Server::onMouseWheel(SInt32 xDelta, SInt32 yDelta)
 void
 Server::onFileChunkSending(const void* data)
 {
-	FileChunk* chunk = reinterpret_cast<FileChunk*>(const_cast<void*>(data));
+	FileChunk* chunk = static_cast<FileChunk*>(const_cast<void*>(data));
 
 	LOG((CLOG_DEBUG1 "sending file chunk"));
 	assert(m_active != NULL);
@@ -2383,14 +2383,14 @@ Server::sendFileToClient(const char* filename)
 	m_sendFileThread = new Thread(
 		new TMethodJob<Server>(
 			this, &Server::sendFileThread,
-			reinterpret_cast<void*>(const_cast<char*>(filename))));
+			static_cast<void*>(const_cast<char*>(filename))));
 }
 
 void
 Server::sendFileThread(void* data)
 {
 	try {
-		char* filename = reinterpret_cast<char*>(data);
+		char* filename = static_cast<char*>(data);
 		LOG((CLOG_DEBUG "sending file to client, filename=%s", filename));
 		StreamChunker::sendFile(filename, m_events, this);
 	}
